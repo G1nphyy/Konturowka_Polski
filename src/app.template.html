@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konturówka Polski</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EDF1EA; --surface:#FFFFFF; --surface-2:#E3E9DF; --border-soft:#CBD5C4;
+    --ink:#1B2420; --ink-soft:#4C5A50; --muted:#7C8A7F;
+    --accent:#2F6F5B; --accent-strong:#1F4F41; --accent-contrast:#F3FBF7;
+    --danger:#B23A3A; --danger-strong:#8F2C2C; --danger-soft:#F4DCDA;
+    --good-soft:#DCEBE2; --gold:#8A6317;
+    /* mapa to zeskanowana kartkówka (jasny obrazek), wiec kolory nakładek na mapie
+       są stałe i nie zmieniają się razem z jasnym/ciemnym motywem aplikacji */
+    --map-coast:#2A3B2C;
+    --ov-ink:#10201A; --ov-halo:#FFFFFF; --ov-ok:#1B8A57; --ov-bad:#D6322F; --ov-target:#E8590C;
+    --shadow: 0 1px 2px rgba(27,36,32,.06), 0 8px 24px -12px rgba(27,36,32,.25);
+    --radius-s:8px; --radius-m:14px; --radius-l:22px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1712; --surface:#16211A; --surface-2:#1C2A21; --border-soft:#2B3A30;
+      --ink:#E7EFE7; --ink-soft:#B7C6B9; --muted:#7E9186;
+      --accent:#57B394; --accent-strong:#7BCBAE; --accent-contrast:#06120D;
+      --danger:#E38080; --danger-strong:#EE9B9B; --danger-soft:#3A2323;
+      --good-soft:#1E3A2C; --gold:#D9AE5C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1712; --surface:#16211A; --surface-2:#1C2A21; --border-soft:#2B3A30;
+    --ink:#E7EFE7; --ink-soft:#B7C6B9; --muted:#7E9186;
+    --accent:#57B394; --accent-strong:#7BCBAE; --accent-contrast:#06120D;
+    --danger:#E38080; --danger-strong:#EE9B9B; --danger-soft:#3A2323;
+    --good-soft:#1E3A2C; --gold:#D9AE5C;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{ height:100%; margin:0; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Manrope',ui-sans-serif,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',Georgia,serif; text-wrap:balance; letter-spacing:-.01em;
+  }
+  .mono{ font-family:'IBM Plex Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+  button{ font-family:inherit; }
+  button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .app{
+    max-width:1240px; margin:0 auto; padding:12px 20px;
+    height:100vh; height:100dvh; display:flex; flex-direction:column; gap:8px; overflow:hidden;
+  }
+
+  /* ---------- top brand ---------- */
+  .brand{ display:flex; align-items:baseline; gap:10px; flex:none; }
+  .brand h1{ font-size:clamp(17px,2vw,21px); font-weight:600; margin:0; }
+  .brand .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent); border:1px solid var(--border-soft); border-radius:999px; padding:2px 8px;
+  }
+  .subtitle{ color:var(--ink-soft); font-size:12.5px; margin:0 0 4px; max-width:78ch; flex:none; }
+
+  /* ---------- screens ---------- */
+  .screen{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  [hidden]{ display:none !important; }
+
+  /* ---------- setup screen ---------- */
+  .mode-tabs{ display:flex; gap:8px; margin:2px 0 10px; flex:none; }
+  .mode-tab{
+    border:1px solid var(--border-soft); background:var(--surface); color:var(--ink-soft);
+    padding:8px 16px; border-radius:999px; cursor:pointer; font-weight:700; font-size:13.5px;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .mode-tab[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+
+  .setup-grid{ flex:1; min-height:0; display:grid; grid-template-columns:1fr; gap:14px; }
+  @media(min-width:920px){ .setup-grid{ grid-template-columns: 2.1fr 1fr; } }
+  @media(max-width:919px){
+    #screen-setup{ overflow-y:auto; }
+    .setup-grid{ flex:none; min-height:auto; }
+    .cat-list{ max-height:300px; }
+  }
+
+  .panel{
+    background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-l);
+    padding:16px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:0;
+  }
+  .panel h2{ font-size:16.5px; font-weight:600; margin:0 0 3px; flex:none; }
+  .panel .hint{ color:var(--muted); font-size:12px; margin:0 0 10px; flex:none; }
+
+  .cat-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex:none; }
+  .link-btn{ background:none;border:none; color:var(--accent); font-weight:700; font-size:13px; cursor:pointer; padding:2px 0; }
+  .link-btn:hover{ text-decoration:underline; }
+
+  .cat-list{
+    flex:1; min-height:0; overflow-y:auto; padding-right:2px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(175px,1fr)); gap:6px; align-content:start;
+  }
+  .cat-card{
+    display:flex; align-items:flex-start; gap:8px; border:1px solid var(--border-soft);
+    background:var(--surface-2); border-radius:var(--radius-m); padding:8px 10px; cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .cat-card:hover{ border-color:var(--accent); }
+  .cat-card.checked{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+  .cat-card input{ margin-top:3px; accent-color:var(--accent); width:15px;height:15px; flex:none; }
+  .cat-card .dot{ width:8px;height:8px; border-radius:50%; display:inline-block; margin-right:6px; flex:none; }
+  .cat-card-text b{ font-size:12.5px; font-weight:700; display:block; line-height:1.25; }
+  .cat-card-text span{ font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; }
+
+  .option-group{ margin-top:10px; flex:none; }
+  .option-group > .label{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:6px; display:block; }
+  .radio-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .radio-pill{
+    border:1px solid var(--border-soft); background:var(--surface-2); border-radius:999px; padding:6px 12px;
+    font-size:12.5px; font-weight:700; cursor:pointer; color:var(--ink-soft);
+  }
+  .radio-pill.active{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+
+  .start-btn{
+    margin-top:12px; flex:none; width:100%; padding:12px 20px; border-radius:999px; border:none;
+    background:var(--accent); color:var(--accent-contrast); font-weight:800; font-size:14.5px; cursor:pointer;
+    box-shadow:var(--shadow); transition:background .15s, transform .1s;
+  }
+  .start-btn:hover{ background:var(--accent-strong); }
+  .start-btn:active{ transform:scale(.99); }
+  .start-btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+  .stats-panel .stat-row{ display:flex; justify-content:space-between; align-items:baseline; padding:6px 0; border-bottom:1px dashed var(--border-soft); }
+  .stats-panel .stat-row:last-of-type{ border-bottom:none; }
+  .stats-panel .stat-row span:first-child{ color:var(--ink-soft); font-size:12.5px; }
+  .stats-panel .stat-row b{ font-family:'IBM Plex Mono',monospace; font-size:14px; }
+  .legend-mini{ margin-top:12px; display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--ink-soft);}
+  .legend-mini div{ display:flex; align-items:center; gap:8px; }
+  .legend-mini svg{ flex:none; }
+  .keys{ margin-top:14px; font-size:11.5px; color:var(--ink-soft); line-height:1.7; }
+  .keys kbd{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; background:var(--surface-2);
+    border:1px solid var(--border-soft); border-bottom-width:2px; border-radius:5px; padding:0 5px;
+  }
+
+  /* ---------- quiz/study top bar ---------- */
+  .quiz-topbar{ flex:none; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .quiz-meta{ display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; }
+  .chip{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); border:1px solid var(--border-soft); border-radius:999px; padding:3px 10px; }
+  .progress-text, .score-text{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); }
+  .score-text b{ color:var(--ink); }
+  .exit-btn{ background:none; border:1px solid var(--border-soft); color:var(--ink-soft); border-radius:999px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  .exit-btn:hover{ border-color:var(--danger); color:var(--danger); }
+  .progress-track{ flex:none; height:4px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill{ height:100%; width:0; background:var(--accent); border-radius:999px; transition:width .25s ease; }
+
+  .prompt-banner{
+    flex:none; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-m);
+    padding:9px 16px; margin-bottom:8px; box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  }
+  .prompt-banner .find-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); font-weight:700; margin-bottom:1px; }
+  .prompt-banner .find-name{ font-size:clamp(17px,2.4vw,22px); font-weight:600; line-height:1.15; }
+  .prompt-banner .find-cat{ font-size:11.5px; color:var(--accent); font-weight:700; margin-top:1px; }
+  .streak-badge{ font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--surface-2); border-radius:999px; padding:6px 12px; white-space:nowrap; }
+
+  /* pasek stanu ma stałą wysokość, żeby mapa nie "skakała" po odpowiedzi */
+  .status-bar{
+    flex:none; min-height:46px; border-radius:var(--radius-m); padding:6px 14px; margin-bottom:8px;
+    display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; border:1px solid var(--border-soft);
+    background:var(--surface-2); color:var(--ink-soft);
+  }
+  .status-bar .st-text{ font-weight:700; font-size:14px; flex:1 1 auto; min-width:0; }
+  .status-bar .st-dist{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); }
+  .status-bar.ok{ background:var(--good-soft); border-color:var(--accent); color:var(--ink); animation:pop .18s ease-out; }
+  .status-bar.bad{ background:var(--danger-soft); border-color:var(--danger); color:var(--ink); animation:pop .18s ease-out; }
+  @keyframes pop{ from{ transform:scale(.985); opacity:.6; } to{ transform:scale(1); opacity:1; } }
+  .ghost-btn{
+    background:none; border:1px solid var(--border-soft); color:var(--ink-soft); border-radius:999px;
+    padding:6px 14px; font-weight:700; font-size:12.5px; cursor:pointer;
+  }
+  .ghost-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .next-btn{
+    background:var(--ink); color:var(--bg); border:none; border-radius:999px; padding:8px 18px; font-weight:800; font-size:13px; cursor:pointer;
+  }
+  .next-btn:hover{ opacity:.85; }
+
+  /* ---------- mapa ---------- */
+  .map-wrap{
+    position:relative; flex:1; min-height:0; overflow:hidden;
+    background:var(--surface-2); border:2px solid var(--map-coast); border-radius:3px; box-shadow:var(--shadow);
+  }
+  .map-svg{
+    position:absolute; left:0; top:0; width:100%; height:100%; display:block;
+    cursor:crosshair; touch-action:none; -webkit-user-select:none; user-select:none;
+  }
+  .map-svg.grabbing{ cursor:grabbing; }
+  .map-tools{ position:absolute; top:10px; right:10px; display:flex; flex-direction:column; gap:6px; z-index:2; }
+  .tool-btn{
+    width:34px; height:34px; border-radius:10px; border:1px solid #b9c4b4; background:rgba(255,255,255,.93);
+    color:#1B2420; font-size:18px; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.18); line-height:1; padding:0;
+  }
+  .tool-btn:hover{ background:#fff; border-color:var(--accent); }
+  .scalebar{
+    position:absolute; right:12px; bottom:10px; z-index:2; pointer-events:none;
+    background:rgba(255,255,255,.88); color:#33413a; padding:4px 8px 5px; border-radius:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+  }
+  .scalebar .bar{ height:4px; background:#33413a; position:relative; margin-bottom:3px; }
+  .scalebar .bar::before,.scalebar .bar::after{ content:""; position:absolute; top:-3px; width:1px; height:10px; background:#33413a; }
+  .scalebar .bar::before{ left:0; } .scalebar .bar::after{ right:0; }
+
+  .below-map{ flex:none; margin-top:6px; display:flex; gap:8px 18px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+  .legend-inline{ display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-soft); }
+  .legend-inline div{ display:flex; align-items:center; gap:6px; }
+  .tip{ font-size:11px; color:var(--muted); }
+
+  /* ---------- study screen ---------- */
+  .study-toolbar{ flex:none; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px; flex-wrap:wrap; }
+  .study-grid{ flex:1; min-height:0; display:grid; grid-template-columns:1fr; grid-template-rows:minmax(120px,30%) 1fr; gap:12px; }
+  @media(min-width:920px){ .study-grid{ grid-template-columns: 270px 1fr; grid-template-rows:1fr; } }
+  .study-side{ min-height:0; display:flex; flex-direction:column; gap:8px; }
+  .study-search{
+    flex:none; width:100%; padding:9px 12px; border-radius:var(--radius-m); border:1px solid var(--border-soft);
+    background:var(--surface); color:var(--ink); font:inherit; font-size:13px;
+  }
+  .study-list{ flex:1; min-height:0; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-l); box-shadow:var(--shadow); padding:8px; overflow-y:auto; }
+  .study-group-title{ font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:800; color:var(--muted); padding:10px 10px 4px; }
+  .study-item{ display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:var(--radius-s); cursor:pointer; font-size:13.5px; }
+  .study-item:hover{ background:var(--surface-2); }
+  .study-item.active{ background:color-mix(in srgb, var(--accent) 16%, var(--surface-2)); font-weight:700; }
+  .study-item .dot{ width:8px;height:8px;border-radius:50%; flex:none; }
+  .study-empty{ padding:16px 10px; color:var(--muted); font-size:13px; }
+  .toggle-row{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-soft); }
+  .toggle-row input{ accent-color:var(--accent); width:15px;height:15px; }
+
+  /* ---------- results screen ---------- */
+  .results-hero{ flex:1; min-height:0; display:flex; flex-direction:column; text-align:center; padding:16px 20px; }
+  .results-score{ flex:none; font-family:'Fraunces',serif; font-size:clamp(32px,6vw,48px); font-weight:600; line-height:1; }
+  .results-pct{ color:var(--accent); }
+  .results-msg{ flex:none; color:var(--ink-soft); margin-top:6px; font-size:14px; }
+  .results-actions{ flex:none; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:14px 0 8px; }
+  .btn{ border-radius:999px; padding:10px 18px; font-weight:800; font-size:13px; cursor:pointer; border:1px solid var(--border-soft); background:var(--surface-2); color:var(--ink); }
+  .btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+  .btn:hover{ filter:brightness(0.97); }
+
+  .cat-breakdown{ flex:none; max-height:30%; overflow-y:auto; text-align:left; display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:4px 18px; padding:8px 2px; border-top:1px solid var(--border-soft); }
+  .cb-row{ display:grid; grid-template-columns:1fr 70px 44px; gap:8px; align-items:center; font-size:12px; }
+  .cb-row .cb-name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink-soft); }
+  .cb-row .cb-bar{ height:6px; border-radius:999px; background:var(--surface-2); overflow:hidden; }
+  .cb-row .cb-bar i{ display:block; height:100%; background:var(--accent); }
+  .cb-row .cb-val{ font-family:'IBM Plex Mono',monospace; text-align:right; color:var(--ink); }
+
+  .mistake-list{ flex:1; min-height:0; overflow-y:auto; border-top:1px solid var(--border-soft); text-align:left; display:flex; flex-direction:column; }
+  .mistake-row{ display:flex; justify-content:space-between; align-items:center; padding:9px 4px; border-bottom:1px solid var(--border-soft); gap:10px; }
+  .mistake-row .mr-name{ font-weight:700; font-size:13px; }
+  .mistake-row .mr-cat{ font-size:11px; color:var(--muted); }
+  .mistake-row .mr-dist{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--danger); white-space:nowrap; }
+  .no-mistakes{ margin:auto; text-align:center; color:var(--ink-soft); padding:16px; font-size:13.5px; }
+
+  footer.credit{ flex:none; text-align:center; color:var(--muted); font-size:10.5px; margin-top:6px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="brand">
+    <h1>Konturówka fizyczna Polski</h1>
+    <span class="tag">Tryb treningowy</span>
+  </div>
+
+  <!-- ===================== SETUP SCREEN ===================== -->
+  <section id="screen-setup" class="screen">
+    <p class="subtitle">Trening przed kartkówką z geografii — na mapie dokładnie takiej, jaka będzie na kartkówce (rzeki, jeziora, bez podpisów krain). Wskazujesz miejsca myszką lub palcem, a aplikacja sprawdza odległość od poprawnej lokalizacji. Mapę można przybliżać i przesuwać.</p>
+    <div class="mode-tabs" role="tablist">
+      <button class="mode-tab" data-mode="quiz" aria-pressed="true" type="button">Quiz — sprawdź się</button>
+      <button class="mode-tab" data-mode="study" aria-pressed="false" type="button">Nauka — przeglądaj mapę</button>
+    </div>
+
+    <div class="setup-grid">
+      <div class="panel">
+        <h2>Wybierz zakres materiału</h2>
+        <p class="hint">Zaznacz kategorie z Twojej listy do nauki. Pod nazwą widać liczbę obiektów i Twoją dotychczasową skuteczność.</p>
+        <div class="cat-toolbar">
+          <div>
+            <button class="link-btn" id="selectAllBtn" type="button">Zaznacz wszystko</button>
+            &nbsp;·&nbsp;
+            <button class="link-btn" id="selectNoneBtn" type="button">Odznacz wszystko</button>
+          </div>
+          <span class="progress-text mono" id="selectedCount"></span>
+        </div>
+        <div class="cat-list" id="catList"></div>
+
+        <div id="quizOptions">
+          <div class="option-group">
+            <span class="label">Kolejność pytań</span>
+            <div class="radio-row" id="orderRow">
+              <button class="radio-pill" data-order="random" type="button">Losowo</button>
+              <button class="radio-pill" data-order="sequence" type="button">Po kolei (wg listy)</button>
+              <button class="radio-pill" data-order="hard" type="button">Najpierw trudne dla Ciebie</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <span class="label">Dokładność kliknięcia</span>
+            <div class="radio-row" id="tolRow">
+              <button class="radio-pill" data-tol="strict" type="button" title="Trafienie w promieniu ok. 10 km od celu (góry: w obrębie pasma)">Ścisła — ok. 10 km</button>
+              <button class="radio-pill" data-tol="loose" type="button" title="Krainy liczą się w całym swoim obszarze, reszta ma podwójną tolerancję">Luźna — cały obszar krainy</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <span class="label">Po dobrej odpowiedzi</span>
+            <div class="radio-row" id="autoRow">
+              <button class="radio-pill" data-auto="1" type="button">Od razu następne pytanie</button>
+              <button class="radio-pill" data-auto="0" type="button">Czekaj na „Dalej”</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" id="startBtn" type="button">Rozpocznij quiz</button>
+      </div>
+
+      <div class="panel stats-panel">
+        <h2>Twoje statystyki</h2>
+        <p class="hint">Zapisywane lokalnie w tej przeglądarce.</p>
+        <div class="stat-row"><span>Odpowiedzi udzielone łącznie</span><b id="statSeen">0</b></div>
+        <div class="stat-row"><span>Skuteczność ogółem</span><b id="statAcc">—</b></div>
+        <div class="stat-row"><span>Obiekty przećwiczone</span><b id="statCovered">0 / 0</b></div>
+        <button class="link-btn" id="resetStatsBtn" type="button" style="margin-top:12px; align-self:flex-start;">Wyzeruj statystyki</button>
+
+        <div class="legend-mini">
+          <div><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="var(--ov-ok)"/></svg> Twoja poprawna odpowiedź</div>
+          <div><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="var(--ov-bad)"/></svg> Twoja błędna odpowiedź</div>
+          <div><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="var(--ov-target)"/></svg> Poprawna lokalizacja (z zaznaczoną tolerancją)</div>
+        </div>
+        <div class="keys">
+          <kbd>Enter</kbd> / <kbd>→</kbd> — następne pytanie<br>
+          <kbd>Esc</kbd> — wyjdź &nbsp; <kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd> — zoom mapy<br>
+          Kółko myszy / szczypanie — zoom, przeciągnięcie — przesuwanie
+        </div>
+      </div>
+    </div>
+    <footer class="credit">Dane: mapa kartkówkowa + współrzędne obiektów fizycznogeograficznych. Tolerancja kliknięcia zależy od typu i wielkości obiektu.</footer>
+  </section>
+
+  <!-- ===================== QUIZ SCREEN ===================== -->
+  <section id="screen-quiz" class="screen" hidden>
+    <div class="quiz-topbar">
+      <div class="quiz-meta">
+        <span class="chip" id="quizCatChip">Kategoria</span>
+        <span class="progress-text">Pytanie <b id="quizProgressN">1</b> / <span id="quizProgressTotal">10</span></span>
+        <span class="score-text">Wynik: <b id="quizScore">0 / 0</b></span>
+      </div>
+      <button class="exit-btn" id="quizExitBtn" type="button">Zakończ i wróć (Esc)</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="prompt-banner">
+      <div>
+        <div class="find-label">Wskaż na mapie</div>
+        <div class="find-name" id="quizTargetName">—</div>
+        <div class="find-cat" id="quizTargetCat"></div>
+      </div>
+      <div class="streak-badge mono" id="streakBadge">seria: 0</div>
+    </div>
+
+    <div id="statusBar" class="status-bar" aria-live="polite">
+      <div class="st-text" id="stText"></div>
+      <div class="st-dist mono" id="stDist"></div>
+      <button class="ghost-btn" id="skipBtn" type="button">Nie wiem</button>
+      <button class="next-btn" id="nextBtn" type="button" hidden>Dalej →</button>
+    </div>
+
+    <div class="map-wrap" id="quizWrap">
+      <svg id="quizSvg" class="map-svg" viewBox="0 0 __VIEWBOX_W__ __VIEWBOX_H__" xmlns="http://www.w3.org/2000/svg">
+        <image class="map-img" x="0" y="0" width="__VIEWBOX_W__" height="__VIEWBOX_H__" preserveAspectRatio="none"/>
+        <g id="quizMarkers"></g>
+      </svg>
+      <div class="map-tools">
+        <button class="tool-btn" type="button" data-act="in" title="Przybliż (+)" aria-label="Przybliż">+</button>
+        <button class="tool-btn" type="button" data-act="out" title="Oddal (−)" aria-label="Oddal">−</button>
+        <button class="tool-btn" type="button" data-act="reset" title="Cała mapa (0)" aria-label="Pokaż całą mapę">⤢</button>
+      </div>
+      <div class="scalebar" id="quizScalebar"></div>
+    </div>
+
+    <div class="below-map">
+      <div class="legend-inline">
+        <div><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--ov-ok)"/></svg> poprawnie</div>
+        <div><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--ov-bad)"/></svg> Twój strzał</div>
+        <div><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--ov-target)"/></svg> cel i tolerancja</div>
+      </div>
+      <div class="tip">Zoom: kółko myszy lub + / −, przesuwanie: przeciągnij mapę.</div>
+    </div>
+  </section>
+
+  <!-- ===================== STUDY SCREEN ===================== -->
+  <section id="screen-study" class="screen" hidden>
+    <div class="study-toolbar">
+      <span class="chip" id="studyCatChip">Nauka</span>
+      <div class="toggle-row"><input type="checkbox" id="showAllLabels"><label for="showAllLabels">Pokaż wszystkie etykiety naraz</label></div>
+      <button class="exit-btn" id="studyExitBtn" type="button">Wróć do ustawień (Esc)</button>
+    </div>
+    <div class="study-grid">
+      <div class="study-side">
+        <input class="study-search" id="studySearch" type="search" placeholder="Szukaj obiektu… (↑ ↓ wybiera)" autocomplete="off">
+        <div class="study-list" id="studyList"></div>
+      </div>
+      <div class="map-wrap" id="studyWrap">
+        <svg id="studySvg" class="map-svg" viewBox="0 0 __VIEWBOX_W__ __VIEWBOX_H__" xmlns="http://www.w3.org/2000/svg">
+          <image class="map-img" x="0" y="0" width="__VIEWBOX_W__" height="__VIEWBOX_H__" preserveAspectRatio="none"/>
+          <g id="studyMarkers"></g>
+        </svg>
+        <div class="map-tools">
+          <button class="tool-btn" type="button" data-act="in" title="Przybliż (+)" aria-label="Przybliż">+</button>
+          <button class="tool-btn" type="button" data-act="out" title="Oddal (−)" aria-label="Oddal">−</button>
+          <button class="tool-btn" type="button" data-act="reset" title="Cała mapa (0)" aria-label="Pokaż całą mapę">⤢</button>
+        </div>
+        <div class="scalebar" id="studyScalebar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTS SCREEN ===================== -->
+  <section id="screen-results" class="screen" hidden>
+    <div class="panel results-hero">
+      <div class="results-score"><span id="resScore">0</span><span style="color:var(--muted)">/</span><span id="resTotal">0</span> <span class="results-pct mono" id="resPct" style="font-size:.4em;"></span></div>
+      <div class="results-msg" id="resMsg"></div>
+      <div class="results-actions">
+        <button class="btn primary" id="retryWrongBtn" type="button">Powtórz błędy</button>
+        <button class="btn" id="playAgainBtn" type="button">Zagraj ponownie</button>
+        <button class="btn" id="backToMenuBtn" type="button">Wróć do ustawień</button>
+      </div>
+      <div class="cat-breakdown" id="catBreakdown" hidden></div>
+      <div class="mistake-list" id="mistakeList"></div>
+    </div>
+  </section>
+</div>
+
+<script id="map-data" type="text/plain">__MAP_DATA_URI__</script>
+<script id="items-data" type="application/json">__ITEMS_JSON__</script>
+<script>
+(function(){
+  "use strict";
+  const ITEMS = JSON.parse(document.getElementById('items-data').textContent);
+  const PX_PER_KM = __PX_PER_KM__;
+  const VB_W = __VIEWBOX_W__, VB_H = __VIEWBOX_H__;
+  const MAP_SRC = document.getElementById('map-data').textContent.trim();
+  document.querySelectorAll('image.map-img').forEach(function(img){ img.setAttribute('href', MAP_SRC); });
+
+  const CAT_ORDER = [
+    {key:'extreme_points', label:'Punkty krańcowe', color:'#B8862E'},
+    {key:'peaks', label:'Szczyty gór wysokich', color:'#8A4B2B'},
+    {key:'lowland_hills', label:'Wyniesienia Niżu Polskiego', color:'#B26A00'},
+    {key:'mountains', label:'Góry', color:'#7A4B1E'},
+    {key:'foothills', label:'Przedgórza i Pogórza', color:'#8C6A3E'},
+    {key:'uplands', label:'Wyżyny', color:'#5E7A33'},
+    {key:'basins_plains', label:'Kotliny i Równiny', color:'#3E7A4E'},
+    {key:'lowlands', label:'Niziny', color:'#2F8F5B'},
+    {key:'lake_districts', label:'Pojezierza', color:'#1E7FA3'},
+    {key:'other_regions', label:'Inne krainy fizycznogeograficzne', color:'#6B5EA8'},
+    {key:'rivers', label:'Rzeki', color:'#2477B0'},
+    {key:'lakes', label:'Jeziora', color:'#1668A8'},
+  ];
+  const CAT_META = Object.fromEntries(CAT_ORDER.map(function(c){ return [c.key,c]; }));
+
+  const STATS_KEY = 'plGeoQuizStats_v2';
+  const PREFS_KEY = 'plGeoQuizPrefs_v2';
+
+  function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return {}; } }
+  function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
+  function loadPrefs(){ try{ return JSON.parse(localStorage.getItem(PREFS_KEY))||{}; }catch(e){ return {}; } }
+  function savePrefs(p){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(p)); }catch(e){} }
+
+  let stats = loadStats();
+  const prefs = loadPrefs();
+
+  const itemsByCat = {};
+  ITEMS.forEach(function(it){ (itemsByCat[it.cat] = itemsByCat[it.cat]||[]).push(it); });
+
+  // ---------------- state ----------------
+  let screen = 'setup';
+  let mode = prefs.mode === 'study' ? 'study' : 'quiz';
+  let selectedCats = new Set(Array.isArray(prefs.cats) && prefs.cats.length ? prefs.cats.filter(function(c){ return itemsByCat[c]; }) : CAT_ORDER.map(function(c){ return c.key; }));
+  let order = ['random','sequence','hard'].indexOf(prefs.order) >= 0 ? prefs.order : 'random';
+  let tolMode = prefs.tol === 'loose' ? 'loose' : 'strict';
+  let autoAdvance = prefs.auto !== false;
+
+  let lastPool = [];
+  let quizQueue = [];
+  let quizIndex = 0;
+  let quizScore = 0;
+  let quizAnswered = 0;
+  let streak = 0;
+  let answered = false;
+  let mistakes = [];   // {item, distKm, skipped}
+  let quizLog = [];    // {item, ok}
+  let quizMark = null; // {x,y,ok}
+  let quizReveal = null;
+  let autoTimer = null;
+
+  // ================= SHARED HELPERS =================
+  function svgNS(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+  function mk(g, tag, attrs){
+    const n = svgNS(tag);
+    for(const k in attrs){ n.setAttribute(k, attrs[k]); }
+    g.appendChild(n);
+    return n;
+  }
+  function norm(s){
+    return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
+  }
+  function anchorOf(it){
+    if(it.kind === 'river'){ return it.pxPoints[Math.floor(it.pxPoints.length/2)]; }
+    return [it.x, it.y];
+  }
+
+  // ---- widok mapy: zoom (kółko, przyciski, szczypanie) i przesuwanie ----
+  function MapView(svg, scalebarEl, onChange){
+    const MAXZ = 7;
+    const vb = {x:0, y:0, w:VB_W, h:VB_H};
+    const ptrs = new Map();
+    let moved = false, startX = 0, startY = 0, pinch = 0;
+
+    function upp(){
+      const m = svg.clientWidth > 0 ? svg.getScreenCTM() : null;
+      return (m && m.a > 0) ? 1 / m.a : 2.2;      // jednostki SVG na 1 piksel ekranu
+    }
+    function updateScalebar(){
+      if(!scalebarEl) return;
+      const pxPerKmScreen = PX_PER_KM / upp();
+      const nice = [1,2,5,10,20,25,50,100,200,250,500];
+      let km = nice[0];
+      for(let i=0;i<nice.length;i++){ if(nice[i]*pxPerKmScreen <= 110) km = nice[i]; }
+      scalebarEl.innerHTML = '<div class="bar" style="width:'+Math.round(km*pxPerKmScreen)+'px"></div><div>'+km+' km</div>';
+    }
+    function changed(){
+      svg.setAttribute('viewBox', vb.x.toFixed(2)+' '+vb.y.toFixed(2)+' '+vb.w.toFixed(2)+' '+vb.h.toFixed(2));
+      updateScalebar();
+      if(onChange) onChange();
+    }
+    function clampPos(){
+      vb.x = Math.min(VB_W - vb.w, Math.max(0, vb.x));
+      vb.y = Math.min(VB_H - vb.h, Math.max(0, vb.y));
+    }
+    function toSvg(cx, cy){
+      const m = svg.getScreenCTM();
+      if(!m) return {x: vb.x + vb.w/2, y: vb.y + vb.h/2};
+      const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy;
+      return pt.matrixTransform(m.inverse());
+    }
+    function zoomAt(ux, uy, f){
+      const nw = Math.min(VB_W, Math.max(VB_W / MAXZ, vb.w / f));
+      const k = nw / vb.w;
+      vb.x = ux - (ux - vb.x) * k;
+      vb.y = uy - (uy - vb.y) * k;
+      vb.w = nw; vb.h = nw * VB_H / VB_W;
+      clampPos(); changed();
+    }
+    function isZoomed(){ return vb.w < VB_W - 0.5; }
+    function pts2(){ const a = Array.from(ptrs.values()); return [a[0], a[1]]; }
+    function pdist(){ const p = pts2(); return Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y); }
+
+    svg.addEventListener('wheel', function(e){
+      e.preventDefault();
+      const p = toSvg(e.clientX, e.clientY);
+      const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      zoomAt(p.x, p.y, Math.min(2, Math.max(0.5, Math.exp(-dy * 0.0018))));
+    }, {passive:false});
+
+    svg.addEventListener('pointerdown', function(e){
+      if(e.pointerType === 'mouse' && e.button !== 0) return;
+      ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      if(ptrs.size === 1){ moved = false; startX = e.clientX; startY = e.clientY; }
+      if(ptrs.size === 2){ moved = true; pinch = pdist(); }
+      try{ svg.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    svg.addEventListener('pointermove', function(e){
+      const p = ptrs.get(e.pointerId);
+      if(!p) return;
+      if(ptrs.size === 1){
+        if(!moved && Math.hypot(e.clientX-startX, e.clientY-startY) < 7) return;
+        moved = true;
+        svg.classList.add('grabbing');
+        const dx = e.clientX - p.x, dy = e.clientY - p.y;
+        p.x = e.clientX; p.y = e.clientY;
+        if(isZoomed()){
+          const u = upp();
+          vb.x -= dx * u; vb.y -= dy * u;
+          clampPos(); changed();
+        }
+      } else if(ptrs.size === 2){
+        p.x = e.clientX; p.y = e.clientY;
+        const d = pdist();
+        if(pinch > 0 && d > 0){
+          const q = pts2();
+          const c = toSvg((q[0].x+q[1].x)/2, (q[0].y+q[1].y)/2);
+          zoomAt(c.x, c.y, d / pinch);
+        }
+        pinch = d;
+      }
+    });
+    function endPtr(e){
+      ptrs.delete(e.pointerId);
+      svg.classList.remove('grabbing');
+      if(ptrs.size < 2) pinch = 0;
+      if(ptrs.size === 0){ setTimeout(function(){ moved = false; }, 0); }
+    }
+    svg.addEventListener('pointerup', endPtr);
+    svg.addEventListener('pointercancel', endPtr);
+
+    return {
+      svg: svg,
+      unit: upp,
+      toSvg: toSvg,
+      wasDragged: function(){ return moved; },
+      isZoomed: isZoomed,
+      bounds: function(){ return {x:vb.x, y:vb.y, w:vb.w, h:vb.h}; },
+      refresh: changed,
+      reset: function(){ vb.x = 0; vb.y = 0; vb.w = VB_W; vb.h = VB_H; changed(); },
+      zoomCenter: function(f){ zoomAt(vb.x + vb.w/2, vb.y + vb.h/2, f); },
+      centerOn: function(x, y){ vb.x = x - vb.w/2; vb.y = y - vb.h/2; clampPos(); changed(); },
+      contains: function(x, y, marginPx){
+        const m = (marginPx || 0) * upp();
+        return x >= vb.x + m && x <= vb.x + vb.w - m && y >= vb.y + m && y <= vb.y + vb.h - m;
+      }
+    };
+  }
+
+  function bindTools(wrapId, view){
+    document.querySelectorAll('#'+wrapId+' .tool-btn').forEach(function(b){
+      b.addEventListener('click', function(){
+        const act = b.dataset.act;
+        if(act === 'in') view.zoomCenter(1.5);
+        else if(act === 'out') view.zoomCenter(1/1.5);
+        else view.reset();
+        b.blur();
+      });
+    });
+    if(typeof ResizeObserver !== 'undefined'){
+      new ResizeObserver(function(){ if(view.svg.clientWidth > 0) view.refresh(); }).observe(document.getElementById(wrapId));
+    }
+  }
+
+  function distPointToSegment(px,py, ax,ay, bx,by){
+    const dx=bx-ax, dy=by-ay;
+    const len2 = dx*dx+dy*dy;
+    let t = len2 ? ((px-ax)*dx+(py-ay)*dy)/len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px-(ax+t*dx), py-(ay+t*dy));
+  }
+  function distToItem(px, py, item){
+    if(item.kind === 'river'){
+      let min = Infinity;
+      for(let i=0;i<item.pxPoints.length-1;i++){
+        const a = item.pxPoints[i], b = item.pxPoints[i+1];
+        min = Math.min(min, distPointToSegment(px,py,a[0],a[1],b[0],b[1]));
+      }
+      return min;
+    }
+    return Math.hypot(px-item.x, py-item.y);
+  }
+  // tolerancja klikniecia (w jednostkach SVG) zaleznie od wybranej dokladnosci
+  function tolFor(it){
+    if(tolMode === 'loose'){
+      if(it.kind === 'region') return Math.max(it.tolPx, it.radiusPx || 0);
+      return it.tolPx * 2;
+    }
+    return it.tolPx;
+  }
+
+  // ---- rysowanie nakładek (rozmiary liczone w pikselach ekranu, niezależnie od zoomu) ----
+  function addLabel(g, view, x, y, text){
+    const u = view.unit(), b = view.bounds();
+    const pad = 70*u;
+    const lx = Math.min(b.x + b.w - pad, Math.max(b.x + pad, x));
+    const ly = Math.max(b.y + 16*u, y - 14*u);
+    const t = mk(g, 'text', {
+      x: lx, y: ly, 'text-anchor':'middle', 'font-size': 13*u,
+      'font-family':"'IBM Plex Mono',monospace", 'font-weight':700,
+      'paint-order':'stroke', stroke:'#fff', 'stroke-width': 4.5*u, 'stroke-linejoin':'round',
+      fill:'var(--ov-ink)'
+    });
+    t.textContent = text;
+  }
+  function drawReveal(g, view, item){
+    const u = view.unit();
+    const T = 'var(--ov-target)';
+    if(item.kind === 'river'){
+      const pts = item.pxPoints.map(function(p){ return p[0]+','+p[1]; }).join(' ');
+      mk(g, 'polyline', {points:pts, fill:'none', stroke:'#fff', 'stroke-width':8*u, 'stroke-linecap':'round', 'stroke-linejoin':'round', opacity:.85});
+      mk(g, 'polyline', {points:pts, fill:'none', stroke:T, 'stroke-width':4*u, 'stroke-linecap':'round', 'stroke-linejoin':'round'});
+      const a = anchorOf(item);
+      addLabel(g, view, a[0], a[1], item.name);
+    } else {
+      mk(g, 'circle', {cx:item.x, cy:item.y, r:tolFor(item), fill:'rgba(232,89,12,.10)', stroke:T, 'stroke-width':2*u, 'stroke-dasharray':(7*u)+' '+(5*u)});
+      mk(g, 'circle', {cx:item.x, cy:item.y, r:9*u, fill:'#fff', opacity:.92});
+      mk(g, 'circle', {cx:item.x, cy:item.y, r:5.5*u, fill:T});
+      addLabel(g, view, item.x, item.y - 8*u, item.name);
+    }
+  }
+  function markClick(g, view, x, y, ok){
+    const u = view.unit();
+    mk(g, 'circle', {cx:x, cy:y, r:7*u, fill: ok ? 'var(--ov-ok)' : 'var(--ov-bad)', stroke:'#fff', 'stroke-width':2.4*u});
+  }
+
+  // ================= SETUP SCREEN =================
+  const catListEl = document.getElementById('catList');
+  const selectedCountEl = document.getElementById('selectedCount');
+  const startBtn = document.getElementById('startBtn');
+
+  function catAccuracy(key){
+    let seen = 0, wrong = 0;
+    (itemsByCat[key]||[]).forEach(function(it){ const s = stats[it.id]; if(s){ seen += s.seen; wrong += s.wrong; } });
+    return seen ? Math.round(100*(seen-wrong)/seen) + '%' : null;
+  }
+  function renderCatList(){
+    catListEl.innerHTML = '';
+    CAT_ORDER.forEach(function(c){
+      const n = (itemsByCat[c.key]||[]).length;
+      if(!n) return;
+      const acc = catAccuracy(c.key);
+      const card = document.createElement('label');
+      card.className = 'cat-card' + (selectedCats.has(c.key) ? ' checked' : '');
+      card.innerHTML = '<input type="checkbox" '+(selectedCats.has(c.key)?'checked':'')+'>' +
+        '<span class="cat-card-text"><b><span class="dot" style="background:'+c.color+'"></span>'+c.label+'</b><span>'+n+' obiektów · '+(acc ? 'skuteczność '+acc : 'jeszcze nie ćwiczone')+'</span></span>';
+      const cb = card.querySelector('input');
+      cb.addEventListener('change', function(){
+        if(cb.checked) selectedCats.add(c.key); else selectedCats.delete(c.key);
+        card.classList.toggle('checked', cb.checked);
+        updateSelectedCount();
+        persistPrefs();
+      });
+      catListEl.appendChild(card);
+    });
+    updateSelectedCount();
+  }
+  function updateSelectedCount(){
+    let total = 0;
+    selectedCats.forEach(function(k){ total += (itemsByCat[k]||[]).length; });
+    selectedCountEl.textContent = total + ' obiektów wybranych';
+    startBtn.disabled = total === 0;
+  }
+  document.getElementById('selectAllBtn').addEventListener('click', function(){
+    selectedCats = new Set(CAT_ORDER.map(function(c){ return c.key; })); renderCatList(); persistPrefs();
+  });
+  document.getElementById('selectNoneBtn').addEventListener('click', function(){
+    selectedCats = new Set(); renderCatList(); persistPrefs();
+  });
+
+  function applyMode(){
+    document.querySelectorAll('.mode-tab').forEach(function(b){
+      b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
+    });
+    document.getElementById('quizOptions').hidden = mode !== 'quiz';
+    startBtn.textContent = mode === 'quiz' ? 'Rozpocznij quiz' : 'Otwórz tryb nauki';
+  }
+  document.querySelectorAll('.mode-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){ mode = btn.dataset.mode; applyMode(); persistPrefs(); });
+  });
+
+  function bindPills(rowId, key, getVal, setVal){
+    const row = document.getElementById(rowId);
+    function render(){
+      row.querySelectorAll('.radio-pill').forEach(function(b){ b.classList.toggle('active', b.dataset[key] === String(getVal())); });
+    }
+    row.querySelectorAll('.radio-pill').forEach(function(b){
+      b.addEventListener('click', function(){ setVal(b.dataset[key]); render(); persistPrefs(); });
+    });
+    render();
+  }
+  bindPills('orderRow', 'order', function(){ return order; }, function(v){ order = v; });
+  bindPills('tolRow', 'tol', function(){ return tolMode; }, function(v){ tolMode = v; });
+  bindPills('autoRow', 'auto', function(){ return autoAdvance ? '1' : '0'; }, function(v){ autoAdvance = v === '1'; });
+
+  function persistPrefs(){
+    savePrefs({ mode: mode, cats: Array.from(selectedCats), order: order, tol: tolMode, auto: autoAdvance });
+  }
+
+  function renderStatsPanel(){
+    let seen = 0, wrong = 0; const covered = new Set();
+    Object.keys(stats).forEach(function(id){
+      const s = stats[id];
+      if(!itemsById[id]) return;
+      seen += s.seen; wrong += s.wrong; if(s.seen > 0) covered.add(id);
+    });
+    document.getElementById('statSeen').textContent = seen;
+    document.getElementById('statAcc').textContent = seen ? Math.round(100*(seen-wrong)/seen)+'%' : '—';
+    document.getElementById('statCovered').textContent = covered.size + ' / ' + ITEMS.length;
+  }
+  const itemsById = {};
+  ITEMS.forEach(function(it){ itemsById[it.id] = it; });
+
+  document.getElementById('resetStatsBtn').addEventListener('click', function(){
+    if(confirm('Na pewno wyzerować zapisane statystyki nauki?')){
+      stats = {}; saveStats(stats); renderStatsPanel(); renderCatList();
+    }
+  });
+
+  startBtn.addEventListener('click', function(){
+    const pool = ITEMS.filter(function(it){ return selectedCats.has(it.cat); });
+    if(!pool.length) return;
+    if(mode === 'quiz') startQuiz(pool); else startStudy(pool);
+  });
+
+  function goSetup(){
+    clearAuto();
+    showScreen('setup');
+    renderCatList(); renderStatsPanel();
+  }
+
+  // ================= QUIZ MODE =================
+  const quizSvg = document.getElementById('quizSvg');
+  const quizMarkers = document.getElementById('quizMarkers');
+  const quizView = MapView(quizSvg, document.getElementById('quizScalebar'), function(){ if(answered) drawQuizMarkers(); });
+  bindTools('quizWrap', quizView);
+
+  const statusBar = document.getElementById('statusBar');
+  const stText = document.getElementById('stText');
+  const stDist = document.getElementById('stDist');
+  const skipBtn = document.getElementById('skipBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function weightedByDifficulty(arr){
+    return arr.map(function(it){
+      const s = stats[it.id];
+      const wrongRate = (s && s.seen) ? s.wrong/s.seen : 0.5;
+      const weight = 1 + wrongRate*4;
+      return {it: it, score: Math.pow(Math.random(), 1/weight)};
+    }).sort(function(a,b){ return b.score-a.score; }).map(function(x){ return x.it; });
+  }
+  function clearAuto(){ if(autoTimer){ clearTimeout(autoTimer); autoTimer = null; } }
+
+  function startQuiz(pool){
+    clearAuto();
+    lastPool = pool.slice();
+    if(order === 'random') quizQueue = shuffle(pool);
+    else if(order === 'hard') quizQueue = weightedByDifficulty(pool);
+    else quizQueue = pool.slice();
+    quizIndex = 0; quizScore = 0; quizAnswered = 0; streak = 0; mistakes = []; quizLog = [];
+    showScreen('quiz');
+    loadQuizQuestion();
+  }
+
+  function setStatus(state, text, dist){
+    statusBar.className = 'status-bar ' + state;
+    stText.textContent = text;
+    stDist.textContent = dist || '';
+    skipBtn.hidden = state !== 'idle';
+    nextBtn.hidden = state === 'idle';
+    nextBtn.textContent = (quizIndex + 1 >= quizQueue.length) ? 'Zakończ ▸' : 'Dalej →';
+  }
+  function updateQuizHeader(){
+    document.getElementById('quizProgressN').textContent = quizIndex + 1;
+    document.getElementById('quizProgressTotal').textContent = quizQueue.length;
+    document.getElementById('quizScore').textContent = quizScore + ' / ' + quizAnswered;
+    document.getElementById('streakBadge').textContent = 'seria: ' + streak;
+    document.getElementById('progressFill').style.width = (100 * (quizIndex + (answered ? 1 : 0)) / quizQueue.length) + '%';
+  }
+  function drawQuizMarkers(){
+    quizMarkers.innerHTML = '';
+    if(quizReveal) drawReveal(quizMarkers, quizView, quizReveal);
+    if(quizMark) markClick(quizMarkers, quizView, quizMark.x, quizMark.y, quizMark.ok);
+  }
+
+  function loadQuizQuestion(){
+    clearAuto();
+    answered = false; quizMark = null; quizReveal = null;
+    quizMarkers.innerHTML = '';
+    quizView.reset();
+    const item = quizQueue[quizIndex];
+    document.getElementById('quizTargetName').textContent = item.name;
+    document.getElementById('quizTargetCat').textContent = item.catLabel;
+    document.getElementById('quizCatChip').textContent = item.catLabel;
+    const hint = item.kind === 'river' ? 'Kliknij na przebiegu rzeki.'
+      : item.kind === 'region' ? 'Kliknij na mapie w obrębie tej krainy.'
+      : 'Kliknij na mapie dokładne miejsce.';
+    setStatus('idle', hint, '');
+    updateQuizHeader();
+  }
+
+  function recordAnswer(item, ok, pt, distKm, skipped){
+    answered = true; quizAnswered++;
+    if(ok){ quizScore++; streak++; } else { streak = 0; mistakes.push({item: item, distKm: distKm, skipped: skipped}); }
+    quizLog.push({item: item, ok: ok});
+
+    if(!stats[item.id]) stats[item.id] = {seen:0, wrong:0};
+    stats[item.id].seen++;
+    if(!ok) stats[item.id].wrong++;
+    saveStats(stats);
+
+    quizMark = pt ? {x: pt.x, y: pt.y, ok: ok} : null;
+    quizReveal = item;
+    const a = anchorOf(item);
+    if(!quizView.contains(a[0], a[1], 40) || (pt && !quizView.contains(pt.x, pt.y, 10))) quizView.reset();
+    drawQuizMarkers();
+
+    const tolKm = Math.round(tolFor(item) / PX_PER_KM);
+    if(skipped) setStatus('bad', 'Pominięte — poprawna lokalizacja jest zaznaczona na mapie', '');
+    else if(ok) setStatus('ok', 'Poprawnie!', '');
+    else setStatus('bad', 'Niepoprawnie — cel jest zaznaczony na pomarańczowo', 'ok. ' + distKm + ' km od celu · tolerancja ' + tolKm + ' km');
+    updateQuizHeader();
+
+    if(ok && autoAdvance){
+      autoTimer = setTimeout(function(){ autoTimer = null; if(answered && screen === 'quiz') nextQuestion(); }, 850);
+    }
+  }
+
+  quizSvg.addEventListener('click', function(evt){
+    if(quizView.wasDragged()) return;
+    if(answered || screen !== 'quiz') return;
+    const p = quizView.toSvg(evt.clientX, evt.clientY);
+    if(p.x < 0 || p.y < 0 || p.x > VB_W || p.y > VB_H) return;
+    const item = quizQueue[quizIndex];
+    const distPx = distToItem(p.x, p.y, item);
+    recordAnswer(item, distPx <= tolFor(item), {x: p.x, y: p.y}, Math.round(distPx / PX_PER_KM), false);
+  });
+
+  skipBtn.addEventListener('click', function(){
+    if(answered || screen !== 'quiz') return;
+    recordAnswer(quizQueue[quizIndex], false, null, null, true);
+  });
+  nextBtn.addEventListener('click', nextQuestion);
+  function nextQuestion(){
+    if(!answered) return;
+    clearAuto();
+    quizIndex++;
+    if(quizIndex >= quizQueue.length) finishQuiz(); else loadQuizQuestion();
+  }
+  function exitQuiz(){
+    if(quizAnswered > 0 && !confirm('Zakończyć quiz i wrócić do ustawień? Odpowiedzi udzielone do tej pory są już zapisane w statystykach.')) return;
+    goSetup();
+  }
+  document.getElementById('quizExitBtn').addEventListener('click', exitQuiz);
+
+  function finishQuiz(){
+    clearAuto();
+    showScreen('results');
+    document.getElementById('resScore').textContent = quizScore;
+    document.getElementById('resTotal').textContent = quizQueue.length;
+    const pct = Math.round(100*quizScore/quizQueue.length);
+    document.getElementById('resPct').textContent = '('+pct+'%)';
+    let msg;
+    if(pct === 100) msg = 'Perfekcyjnie! Znasz tę mapę na wylot.';
+    else if(pct >= 85) msg = 'Bardzo dobrze — jeszcze tylko szlify.';
+    else if(pct >= 60) msg = 'Nieźle, ale warto jeszcze potrenować.';
+    else msg = 'Potrzeba więcej treningu — spróbuj ponownie, zwłaszcza błędów poniżej.';
+    document.getElementById('resMsg').textContent = msg;
+
+    // wyniki wg kategorii
+    const byCat = {};
+    quizLog.forEach(function(r){ const c = byCat[r.item.cat] || (byCat[r.item.cat] = {ok:0, n:0}); c.n++; if(r.ok) c.ok++; });
+    const cbEl = document.getElementById('catBreakdown');
+    cbEl.innerHTML = '';
+    const catKeys = CAT_ORDER.filter(function(c){ return byCat[c.key]; });
+    cbEl.hidden = catKeys.length < 2;
+    catKeys.forEach(function(c){
+      const v = byCat[c.key];
+      const row = document.createElement('div');
+      row.className = 'cb-row';
+      row.innerHTML = '<span class="cb-name">'+c.label+'</span><span class="cb-bar"><i style="width:'+Math.round(100*v.ok/v.n)+'%"></i></span><span class="cb-val">'+v.ok+'/'+v.n+'</span>';
+      cbEl.appendChild(row);
+    });
+
+    const list = document.getElementById('mistakeList');
+    list.innerHTML = '';
+    document.getElementById('retryWrongBtn').hidden = !mistakes.length;
+    if(!mistakes.length){
+      list.innerHTML = '<div class="no-mistakes">Brak błędów w tym przebiegu — świetna robota!</div>';
+    } else {
+      mistakes.forEach(function(m){
+        const row = document.createElement('div');
+        row.className = 'mistake-row';
+        row.innerHTML = '<div><div class="mr-name">'+m.item.name+'</div><div class="mr-cat">'+m.item.catLabel+'</div></div>' +
+          '<div class="mr-dist">'+(m.skipped ? 'pominięte' : '~'+m.distKm+' km od celu')+'</div>';
+        list.appendChild(row);
+      });
+    }
+  }
+
+  document.getElementById('retryWrongBtn').addEventListener('click', function(){
+    const pool = mistakes.map(function(m){ return m.item; });
+    if(!pool.length) return;
+    startQuiz(pool);
+  });
+  document.getElementById('playAgainBtn').addEventListener('click', function(){ startQuiz(lastPool); });
+  document.getElementById('backToMenuBtn').addEventListener('click', goSetup);
+
+  // ================= STUDY MODE =================
+  const studySvg = document.getElementById('studySvg');
+  const studyMarkers = document.getElementById('studyMarkers');
+  const studyListEl = document.getElementById('studyList');
+  const studySearch = document.getElementById('studySearch');
+  const studyView = MapView(studySvg, document.getElementById('studyScalebar'), function(){ if(screen === 'study') renderStudyMap(); });
+  bindTools('studyWrap', studyView);
+
+  let studyPool = [];
+  let studyActiveId = null;
+  let studyVisible = [];   // obiekty widoczne na liście (po filtrze), w kolejności wyświetlania
+  let studyRows = {};      // id -> element wiersza
+
+  function startStudy(pool){
+    studyPool = pool;
+    studyActiveId = null;
+    studySearch.value = '';
+    document.getElementById('showAllLabels').checked = false;
+    document.getElementById('studyCatChip').textContent = 'Nauka · ' + pool.length + ' obiektów';
+    showScreen('study');
+    studyView.reset();
+    renderStudyList();
+    renderStudyMap();
+  }
+  function renderStudyList(){
+    studyListEl.innerHTML = '';
+    studyRows = {}; studyVisible = [];
+    const q = norm(studySearch.value.trim());
+    const byCat = {};
+    studyPool.forEach(function(it){
+      if(q && norm(it.name).indexOf(q) < 0) return;
+      (byCat[it.cat] = byCat[it.cat]||[]).push(it);
+    });
+    CAT_ORDER.forEach(function(c){
+      const arr = byCat[c.key]; if(!arr) return;
+      const h = document.createElement('div');
+      h.className = 'study-group-title';
+      h.textContent = c.label + ' (' + arr.length + ')';
+      studyListEl.appendChild(h);
+      arr.forEach(function(it){
+        const row = document.createElement('div');
+        row.className = 'study-item' + (it.id === studyActiveId ? ' active' : '');
+        row.innerHTML = '<span class="dot" style="background:'+c.color+'"></span>'+it.name;
+        row.addEventListener('click', function(){ selectStudy(it.id); });
+        studyListEl.appendChild(row);
+        studyRows[it.id] = row;
+        studyVisible.push(it);
+      });
+    });
+    if(!studyVisible.length){
+      studyListEl.innerHTML = '<div class="study-empty">Brak obiektów pasujących do wyszukiwania.</div>';
+    }
+  }
+  function selectStudy(id){
+    if(studyActiveId && studyRows[studyActiveId]) studyRows[studyActiveId].classList.remove('active');
+    studyActiveId = id;
+    const row = studyRows[id];
+    if(row){ row.classList.add('active'); row.scrollIntoView({block:'nearest'}); }
+    const it = itemsById[id];
+    if(it && studyView.isZoomed()){ const a = anchorOf(it); studyView.centerOn(a[0], a[1]); }
+    else renderStudyMap();
+  }
+  function stepStudy(delta){
+    if(!studyVisible.length) return;
+    let idx = studyVisible.findIndex(function(it){ return it.id === studyActiveId; });
+    idx = idx < 0 ? (delta > 0 ? 0 : studyVisible.length - 1) : (idx + delta + studyVisible.length) % studyVisible.length;
+    selectStudy(studyVisible[idx].id);
+  }
+  function renderStudyMap(){
+    studyMarkers.innerHTML = '';
+    const u = studyView.unit();
+    const showAll = document.getElementById('showAllLabels').checked;
+    studyPool.forEach(function(it){
+      const isActive = it.id === studyActiveId;
+      if(!(showAll || isActive)) return;
+      const col = isActive ? 'var(--ov-target)' : CAT_META[it.cat].color;
+      if(it.kind === 'river'){
+        const pts = it.pxPoints.map(function(p){ return p[0]+','+p[1]; }).join(' ');
+        mk(studyMarkers, 'polyline', {points:pts, fill:'none', stroke:'#fff', 'stroke-width':(isActive?8:5)*u, 'stroke-linecap':'round', 'stroke-linejoin':'round', opacity:.8});
+        mk(studyMarkers, 'polyline', {points:pts, fill:'none', stroke:col, 'stroke-width':(isActive?4:2.4)*u, 'stroke-linecap':'round', 'stroke-linejoin':'round'});
+        const a = anchorOf(it);
+        addLabel(studyMarkers, studyView, a[0], a[1], it.name);
+      } else {
+        if(it.kind === 'region'){
+          mk(studyMarkers, 'circle', {
+            cx:it.x, cy:it.y, r:(tolMode==='loose' ? Math.max(it.tolPx, it.radiusPx||0) : it.tolPx),
+            fill: isActive ? 'rgba(232,89,12,.10)' : 'none', stroke:col,
+            'stroke-width': (isActive?2:1.4)*u, 'stroke-dasharray': (6*u)+' '+(5*u)
+          });
+        }
+        mk(studyMarkers, 'circle', {cx:it.x, cy:it.y, r:(isActive?9:6)*u, fill:'#fff', opacity:.9});
+        mk(studyMarkers, 'circle', {cx:it.x, cy:it.y, r:(isActive?5.5:3.6)*u, fill:col});
+        addLabel(studyMarkers, studyView, it.x, it.y - 6*u, it.name);
+      }
+    });
+  }
+  document.getElementById('showAllLabels').addEventListener('change', renderStudyMap);
+  studySearch.addEventListener('input', renderStudyList);
+  document.getElementById('studyExitBtn').addEventListener('click', goSetup);
+
+  // ================= SCREEN SWITCH =================
+  function showScreen(name){
+    screen = name;
+    ['setup','quiz','study','results'].forEach(function(n){
+      document.getElementById('screen-'+n).hidden = (n !== name);
+    });
+    window.scrollTo(0, 0);
+    requestAnimationFrame(function(){
+      if(name === 'quiz') quizView.refresh();
+      if(name === 'study') studyView.refresh();
+    });
+  }
+
+  // ================= KEYBOARD =================
+  document.addEventListener('keydown', function(e){
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target, tag = (t && t.tagName) || '';
+    const inField = tag === 'INPUT' && t.type !== 'checkbox' || tag === 'TEXTAREA' || tag === 'SELECT';
+    const key = e.key;
+    const zoomView = screen === 'quiz' ? quizView : screen === 'study' ? studyView : null;
+
+    if(zoomView && !inField){
+      if(key === '+' || key === '='){ e.preventDefault(); zoomView.zoomCenter(1.4); return; }
+      if(key === '-' || key === '_'){ e.preventDefault(); zoomView.zoomCenter(1/1.4); return; }
+      if(key === '0'){ e.preventDefault(); zoomView.reset(); return; }
+    }
+    if(screen === 'quiz'){
+      if(key === 'Escape'){ e.preventDefault(); exitQuiz(); return; }
+      if(answered && (key === 'ArrowRight' || ((key === 'Enter' || key === ' ') && tag !== 'BUTTON'))){
+        e.preventDefault(); nextQuestion();
+      }
+    } else if(screen === 'study'){
+      if(key === 'ArrowDown' || (!inField && key === 'ArrowRight')){ e.preventDefault(); stepStudy(1); }
+      else if(key === 'ArrowUp' || (!inField && key === 'ArrowLeft')){ e.preventDefault(); stepStudy(-1); }
+      else if(key === 'Escape'){
+        e.preventDefault();
+        if(studySearch.value){ studySearch.value = ''; renderStudyList(); } else goSetup();
+      }
+    } else if(screen === 'results'){
+      if(key === 'Escape'){ e.preventDefault(); goSetup(); }
+    } else if(screen === 'setup'){
+      if(key === 'Enter' && !/^(BUTTON|INPUT|SELECT|TEXTAREA|A|LABEL)$/.test(tag) && !startBtn.disabled){
+        e.preventDefault(); startBtn.click();
+      }
+    }
+  });
+
+  // ================= INIT =================
+  applyMode();
+  renderCatList();
+  renderStatsPanel();
+})();
+</script>
+</body>
+</html>

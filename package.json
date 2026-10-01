@@ -1,0 +1,11 @@
+{
+  "name": "konturowka-polski",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiz do nauki fizycznej mapy Polski przed kartkówką z geografii.",
+  "scripts": {
+    "build": "node src/build-border.js && node src/build-items.js && node src/build-physical.js && node src/render.js",
+    "serve": "node src/server.js",
+    "dev": "npm run build && npm run serve"
+  }
+}

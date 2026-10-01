@@ -1,0 +1,15 @@
+{
+  "opis": "Georeferencja mapy kartkowkowej (data/mapa-kartkowka.jpg). Projekcja stozkowa dopasowana do granicy Polski i kontrolnie do miast na mapie (Warszawa, Krakow, Wroclaw, Poznan, Szczecin, Berlin...). Wspolrzedne px (tx, ty, s) dotycza ORYGINALNEGO obrazka 504x396 px; plik mapa-kartkowka.jpg jest powiekszony 3x.",
+  "image": "data/mapa-kartkowka.jpg",
+  "origWidth": 504,
+  "origHeight": 396,
+  "scale": 3,
+  "projection": {
+    "type": "conic",
+    "phi1": 52.374125329587905,
+    "lon0": 19.46120377294644,
+    "s": 3294.633720128729,
+    "tx": 249.32037494085705,
+    "ty": -2329.3716538684525
+  }
+}

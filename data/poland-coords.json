@@ -1,0 +1,140 @@
+{
+  "extreme_points": [
+    {"id": "przyladek-rozewie", "name": "Przylądek Rozewie", "lat": 54.8306, "lon": 18.3383, "note": "Najbardziej na północ wysunięty punkt Polski (ląd stały), 54°49'50\"N 18°20'18\"E"},
+    {"id": "opolonek", "name": "Opołonek", "lat": 49.0020, "lon": 22.8597, "note": "Najbardziej na południe wysunięty punkt Polski, stok szczytu Opołonek w Bieszczadach, 49°00'07\"N 22°51'35\"E"},
+    {"id": "zakole-odry-kolo-cedyni", "name": "Zakole Odry koło Cedyni (Osinów Dolny)", "lat": 52.8377, "lon": 14.1229, "note": "Najbardziej na zachód wysunięty punkt Polski, w nurcie Odry koło Osinowa Dolnego/Cedyni, 52°50'16\"N 14°07'23\"E"},
+    {"id": "zosin", "name": "Zosin", "lat": 50.8667, "lon": 24.1500, "note": "Najbardziej na wschód wysunięty punkt Polski, zakole Bugu koło wsi Zosin (pow. hrubieszowski), ok. 50°52'N 24°09'E"}
+  ],
+  "peaks": [
+    {"id": "rysy", "name": "Rysy", "lat": 49.1794, "lon": 20.0881},
+    {"id": "babia-gora", "name": "Babia Góra", "lat": 49.5736, "lon": 19.5286},
+    {"id": "sniezka", "name": "Śnieżka", "lat": 50.7361, "lon": 15.7400},
+    {"id": "sniezhnik", "name": "Śnieżnik", "lat": 50.2119, "lon": 16.8386}
+  ],
+  "lowland_hills": [
+    {"id": "wiezyca", "name": "Wieżyca", "lat": 54.2075, "lon": 18.0594},
+    {"id": "dylewska-gora", "name": "Dylewska Góra", "lat": 53.5386, "lon": 19.9394},
+    {"id": "szeska-gora", "name": "Szeska Góra", "lat": 54.1500, "lon": 22.0500},
+    {"id": "sleza", "name": "Ślęża", "lat": 50.8628, "lon": 16.7092}
+  ],
+  "mountains": [
+    {"id": "gory-swietokrzyskie", "name": "Góry Świętokrzyskie", "lat": 50.88, "lon": 20.90, "radius_km": 25},
+    {"id": "gory-izerskie", "name": "Góry Izerskie", "lat": 50.85, "lon": 15.35, "radius_km": 15},
+    {"id": "karkonosze", "name": "Karkonosze", "lat": 50.76, "lon": 15.68, "radius_km": 15},
+    {"id": "gory-kaczawskie", "name": "Góry Kaczawskie", "lat": 51.02, "lon": 15.75, "radius_km": 15},
+    {"id": "gory-sowie", "name": "Góry Sowie", "lat": 50.65, "lon": 16.50, "radius_km": 12},
+    {"id": "gory-stolowe", "name": "Góry Stołowe", "lat": 50.48, "lon": 16.35, "radius_km": 12},
+    {"id": "gory-orlickie", "name": "Góry Orlickie", "lat": 50.35, "lon": 16.35, "radius_km": 12},
+    {"id": "gory-zlote", "name": "Góry Złote", "lat": 50.35, "lon": 16.85, "radius_km": 12},
+    {"id": "beskid-slaski", "name": "Beskid Śląski", "lat": 49.70, "lon": 19.00, "radius_km": 15},
+    {"id": "beskid-zywiecki", "name": "Beskid Żywiecki", "lat": 49.60, "lon": 19.30, "radius_km": 18},
+    {"id": "podhale", "name": "Podhale", "lat": 49.45, "lon": 20.00, "radius_km": 15},
+    {"id": "tatry", "name": "Tatry", "lat": 49.23, "lon": 20.00, "radius_km": 15},
+    {"id": "gorce", "name": "Gorce", "lat": 49.53, "lon": 20.15, "radius_km": 12},
+    {"id": "pieniny", "name": "Pieniny", "lat": 49.42, "lon": 20.40, "radius_km": 10},
+    {"id": "beskid-sadecki", "name": "Beskid Sądecki", "lat": 49.45, "lon": 20.65, "radius_km": 18},
+    {"id": "beskid-niski", "name": "Beskid Niski", "lat": 49.50, "lon": 21.50, "radius_km": 25},
+    {"id": "bieszczady", "name": "Bieszczady", "lat": 49.15, "lon": 22.50, "radius_km": 25}
+  ],
+  "foothills": [
+    {"id": "przedgorze-sudeckie", "name": "Przedgórze Sudeckie", "lat": 50.85, "lon": 16.60, "radius_km": 25},
+    {"id": "plaskowyz-glubczycki", "name": "Płaskowyż Głubczycki", "lat": 50.15, "lon": 17.85, "radius_km": 15},
+    {"id": "pogorze-wielickie", "name": "Pogórze Wielickie", "lat": 49.85, "lon": 20.20, "radius_km": 15},
+    {"id": "pogorze-przemyskie", "name": "Pogórze Przemyskie", "lat": 49.65, "lon": 22.65, "radius_km": 18}
+  ],
+  "uplands": [
+    {"id": "wyzyna-slaska", "name": "Wyżyna Śląska", "lat": 50.35, "lon": 18.95, "radius_km": 25},
+    {"id": "wyzyna-malopolska", "name": "Wyżyna Małopolska", "lat": 50.75, "lon": 20.30, "radius_km": 40},
+    {"id": "wyzyna-krakowsko-czestochowska", "name": "Wyżyna Krakowsko-Częstochowska", "lat": 50.45, "lon": 19.50, "radius_km": 25},
+    {"id": "wyzyna-belchatowska", "name": "Wyżyna Bełchatowska", "lat": 51.35, "lon": 19.25, "radius_km": 12},
+    {"id": "wyzyna-kielecka", "name": "Wyżyna Kielecka", "lat": 50.85, "lon": 20.55, "radius_km": 20},
+    {"id": "roztocze", "name": "Roztocze", "lat": 50.45, "lon": 23.05, "radius_km": 25},
+    {"id": "wyzyna-lubelska", "name": "Wyżyna Lubelska", "lat": 51.05, "lon": 22.60, "radius_km": 30},
+    {"id": "wyzyna-wolynska", "name": "Wyżyna Wołyńska", "lat": 50.75, "lon": 23.95, "radius_km": 12},
+    {"id": "wyzyna-przedborska", "name": "Wyżyna Przedborska", "lat": 51.02, "lon": 20.00, "radius_km": 20}
+  ],
+  "basins_plains": [
+    {"id": "kotlina-sandomierska", "name": "Kotlina Sandomierska", "lat": 50.10, "lon": 21.80, "radius_km": 40},
+    {"id": "rownina-opolska", "name": "Równina Opolska", "lat": 50.75, "lon": 17.85, "radius_km": 25},
+    {"id": "niecka-nidzianska", "name": "Niecka Nidziańska", "lat": 50.45, "lon": 20.55, "radius_km": 20},
+    {"id": "kotlina-oswiecimska", "name": "Kotlina Oświęcimska", "lat": 49.95, "lon": 19.20, "radius_km": 20},
+    {"id": "padol-zamojski", "name": "Padół Zamojski", "lat": 50.68, "lon": 23.10, "radius_km": 15}
+  ],
+  "lowlands": [
+    {"id": "nizina-slasko-luzycka", "name": "Nizina Śląsko-Łużycka", "lat": 51.55, "lon": 15.00, "radius_km": 30},
+    {"id": "nizina-slaska", "name": "Nizina Śląska", "lat": 51.10, "lon": 17.00, "radius_km": 35},
+    {"id": "nizina-srodkowomazowiecka", "name": "Nizina Środkowomazowiecka", "lat": 52.35, "lon": 20.90, "radius_km": 40},
+    {"id": "nizina-polnocnomazowiecka", "name": "Nizina Północnomazowiecka", "lat": 52.95, "lon": 20.90, "radius_km": 30},
+    {"id": "nizina-poludniowowielkopolska", "name": "Nizina Południowowielkopolska", "lat": 51.65, "lon": 17.50, "radius_km": 35},
+    {"id": "nizina-poludniowopodlaska", "name": "Nizina Południowopodlaska", "lat": 52.15, "lon": 22.30, "radius_km": 30},
+    {"id": "nizina-polnocnopodlaska", "name": "Nizina Północnopodlaska", "lat": 53.05, "lon": 23.15, "radius_km": 30},
+    {"id": "polesie-zachodnie", "name": "Polesie Zachodnie", "lat": 51.45, "lon": 23.15, "radius_km": 25},
+    {"id": "nizina-staropruska", "name": "Nizina Staropruska", "lat": 54.15, "lon": 20.70, "radius_km": 25},
+    {"id": "zulawy-wislane", "name": "Żuławy Wiślane", "lat": 54.15, "lon": 19.05, "radius_km": 20}
+  ],
+  "lake_districts": [
+    {"id": "pojezierze-leszczynskie", "name": "Pojezierze Leszczyńskie", "lat": 51.85, "lon": 16.55, "radius_km": 20},
+    {"id": "pojezierze-lubuskie", "name": "Pojezierze Lubuskie", "lat": 52.35, "lon": 15.35, "radius_km": 25},
+    {"id": "pojezierze-poznanskie", "name": "Pojezierze Poznańskie", "lat": 52.55, "lon": 16.85, "radius_km": 30},
+    {"id": "pojezierze-gnieznienskie", "name": "Pojezierze Gnieźnieńskie", "lat": 52.55, "lon": 17.75, "radius_km": 25},
+    {"id": "pojezierze-chelminskie", "name": "Pojezierze Chełmińskie", "lat": 53.20, "lon": 18.55, "radius_km": 25},
+    {"id": "pojezierze-mysliborskie", "name": "Pojezierze Myśliborskie", "lat": 52.90, "lon": 14.85, "radius_km": 20},
+    {"id": "pojezierze-kaszubskie", "name": "Pojezierze Kaszubskie", "lat": 54.10, "lon": 17.95, "radius_km": 25},
+    {"id": "pojezierze-drawskie", "name": "Pojezierze Drawskie", "lat": 53.55, "lon": 16.00, "radius_km": 25},
+    {"id": "pojezierze-ilawskie", "name": "Pojezierze Iławskie", "lat": 53.60, "lon": 19.55, "radius_km": 25},
+    {"id": "pojezierze-olsztynskie", "name": "Pojezierze Olsztyńskie", "lat": 53.85, "lon": 20.90, "radius_km": 25},
+    {"id": "pojezierze-wschodniosuwalskie", "name": "Pojezierze Wschodniosuwalskie", "lat": 54.12, "lon": 23.35, "radius_km": 15},
+    {"id": "pojezierze-zachodniosuwalskie", "name": "Pojezierze Zachodniosuwalskie", "lat": 54.05, "lon": 22.95, "radius_km": 15}
+  ],
+  "other_regions": [
+    {"id": "wzgorza-trzebnickie", "name": "Wzgórza Trzebnickie", "lat": 51.35, "lon": 16.95, "radius_km": 20},
+    {"id": "wzniesienia-poludniowomazowieckie", "name": "Wzniesienia Południowomazowieckie", "lat": 51.60, "lon": 19.85, "radius_km": 25},
+    {"id": "pobrzeze-szczecinskie", "name": "Pobrzeże Szczecińskie", "lat": 53.75, "lon": 14.65, "radius_km": 30},
+    {"id": "pobrzeze-koszalinskie", "name": "Pobrzeże Koszalińskie", "lat": 54.15, "lon": 16.20, "radius_km": 30},
+    {"id": "pobrzeze-slowinskie", "name": "Pobrzeże Słowińskie", "lat": 54.65, "lon": 17.40, "radius_km": 25},
+    {"id": "pobrzeze-gdanskie", "name": "Pobrzeże Gdańskie", "lat": 54.55, "lon": 18.55, "radius_km": 25}
+  ],
+  "rivers": [
+    {"id": "wisla", "name": "Wisła", "points": [[49.54,18.93],[49.83,19.04],[50.06,19.94],[50.68,21.75],[51.40,21.27],[52.23,21.01],[52.55,19.71],[53.01,18.60],[53.39,18.60],[54.35,18.93]]},
+    {"id": "odra", "name": "Odra", "points": [[49.65,17.65],[50.09,18.22],[50.67,17.93],[51.11,17.03],[52.59,14.65],[53.43,14.55],[53.90,14.24]]},
+    {"id": "warta", "name": "Warta", "points": [[50.53,19.43],[50.81,19.12],[51.60,18.73],[52.03,18.20],[52.41,16.93],[52.73,15.24],[52.59,14.65]]},
+    {"id": "bug", "name": "Bug", "points": [[49.45,24.90],[50.35,24.35],[50.81,23.89],[51.55,23.55],[52.06,22.87],[52.60,21.46],[52.50,21.15]]},
+    {"id": "narew", "name": "Narew", "points": [[52.90,24.30],[53.09,23.70],[53.13,23.16],[53.18,22.06],[52.70,21.09],[52.50,21.15]]},
+    {"id": "san", "name": "San", "points": [[49.05,23.15],[49.35,22.30],[49.47,22.32],[49.78,22.77],[50.02,22.68],[50.55,22.05],[50.62,21.80]]},
+    {"id": "notec", "name": "Noteć", "points": [[52.63,18.20],[52.85,17.87],[53.13,17.60],[53.15,16.74],[52.90,15.90],[52.73,15.28]]},
+    {"id": "pilica", "name": "Pilica", "points": [[50.48,19.65],[50.78,19.53],[51.35,19.88],[51.53,20.01],[51.62,20.90],[51.78,21.25]]},
+    {"id": "wieprz", "name": "Wieprz", "points": [[50.47,23.42],[50.80,23.19],[51.22,22.57],[51.46,22.61],[51.60,21.85]]},
+    {"id": "bobr", "name": "Bóbr", "points": [[50.82,15.52],[50.90,15.72],[51.10,15.57],[51.26,15.57],[51.62,15.32],[51.95,15.20]]},
+    {"id": "lyna", "name": "Łyna", "points": [[53.55,20.30],[53.78,20.48],[53.97,20.40],[54.13,20.58],[54.20,20.75]]},
+    {"id": "nysa-luzycka", "name": "Nysa Łużycka", "points": [[50.83,15.15],[50.90,14.95],[51.15,14.98],[51.57,14.98],[51.95,14.75]]},
+    {"id": "nysa-klodzka", "name": "Nysa Kłodzka", "points": [[50.23,16.77],[50.44,16.65],[50.47,17.17],[50.47,17.33],[50.75,17.65]]},
+    {"id": "bzura", "name": "Bzura", "points": [[51.85,19.30],[52.02,19.60],[52.11,19.94],[52.23,20.23],[52.40,20.20]]},
+    {"id": "biebrza", "name": "Biebrza", "points": [[53.60,22.65],[53.55,23.00],[53.30,22.75],[53.20,22.40]]},
+    {"id": "leba", "name": "Łeba", "points": [[54.15,17.95],[54.35,17.85],[54.54,17.75],[54.76,17.55]]},
+    {"id": "dunajec", "name": "Dunajec", "points": [[49.30,19.95],[49.43,20.42],[49.42,20.62],[49.75,20.75],[50.30,20.90]]},
+    {"id": "prosna", "name": "Prosna", "points": [[51.05,18.75],[51.36,18.60],[51.76,18.09],[52.00,17.90],[52.14,17.72]]},
+    {"id": "wisloka", "name": "Wisłoka", "points": [[49.55,21.20],[49.65,21.30],[50.05,21.41],[50.35,21.55]]},
+    {"id": "drawa", "name": "Drawa", "points": [[53.53,16.02],[53.30,15.95],[53.05,15.95],[52.90,15.90]]}
+  ],
+  "lakes": [
+    {"id": "sniardwy", "name": "Śniardwy", "lat": 53.7667, "lon": 21.7333},
+    {"id": "mamry", "name": "Mamry", "lat": 54.1167, "lon": 21.7333},
+    {"id": "lebsko", "name": "Łebsko", "lat": 54.7333, "lon": 17.5333},
+    {"id": "dabie", "name": "Dąbie", "lat": 53.9833, "lon": 14.6833},
+    {"id": "miedwie", "name": "Miedwie", "lat": 53.3667, "lon": 14.8833},
+    {"id": "jeziorak", "name": "Jeziorak", "lat": 53.6167, "lon": 19.5667},
+    {"id": "gardno", "name": "Gardno", "lat": 54.6667, "lon": 17.1667},
+    {"id": "jamno", "name": "Jamno", "lat": 54.2167, "lon": 16.1667},
+    {"id": "wigry", "name": "Wigry", "lat": 54.0333, "lon": 23.1167},
+    {"id": "hancza", "name": "Hańcza", "lat": 54.2717, "lon": 22.8143},
+    {"id": "drawsko", "name": "Drawsko", "lat": 53.6333, "lon": 15.9667},
+    {"id": "wloclawskie-zbiornik", "name": "Włocławskie (zbiornik)", "lat": 52.6500, "lon": 19.1500},
+    {"id": "solinskie-zalew", "name": "Solińskie (zalew)", "lat": 49.4000, "lon": 22.4500},
+    {"id": "raciborz-dolny-zbiornik", "name": "Racibórz Dolny (zbiornik przeciwpowodziowy)", "lat": 50.0500, "lon": 18.2000},
+    {"id": "jeziorsko-zbiornik", "name": "Jeziorsko (zbiornik)", "lat": 51.6800, "lon": 18.6800},
+    {"id": "czorsztynskie-zbiornik", "name": "Czorsztyńskie (zbiornik)", "lat": 49.4500, "lon": 20.3400},
+    {"id": "nyskie-zbiornik", "name": "Nyskie (zbiornik)", "lat": 50.4700, "lon": 17.3300},
+    {"id": "otmuchowskie-zbiornik", "name": "Otmuchowskie (zbiornik)", "lat": 50.4700, "lon": 17.1700},
+    {"id": "zegrzynskie-zbiornik", "name": "Zegrzyńskie (zbiornik)", "lat": 52.4700, "lon": 21.0800}
+  ]
+}
